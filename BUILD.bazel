@@ -1,5 +1,6 @@
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
+load("@aspect_rules_webpack//webpack:defs.bzl", "webpack_bundle", "webpack_devserver")
 load("@npm//:tsconfig-to-swcconfig/package_json.bzl", tsconfig_to_swcconfig = "bin")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 
@@ -28,4 +29,37 @@ js_library(
     name = "jest_config",
     srcs = ["jest.config.js"],
     visibility = ["//visibility:public"],
+)
+
+# Dev server for local testing.
+WEBPACK_DEPS = [
+    "//:node_modules/@svgr/webpack",
+    "//:node_modules/css-loader",
+    "//:node_modules/html-webpack-plugin",
+    "//:node_modules/react",
+    "//:node_modules/react-dom",
+    "//:node_modules/style-loader",
+]
+
+webpack_bundle(
+    name = "bundle",
+    srcs = [
+        "//public",
+        "//src",
+    ],
+    node_modules = "//:node_modules",
+    output_dir = True,
+    webpack_config = "webpack.bazel.config.js",
+    deps = WEBPACK_DEPS,
+)
+
+webpack_devserver(
+    name = "dev_server",
+    data = [
+        "//public",
+        "//src",
+    ] + WEBPACK_DEPS,
+    entry_point = "//src:index.js",
+    node_modules = "//:node_modules",
+    webpack_config = "webpack.bazel.config.js",
 )
