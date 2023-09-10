@@ -1,1 +1,5 @@
+build --@aspect_rules_ts//ts:skipLibCheck=always
+fetch --@aspect_rules_ts//ts:skipLibCheck=always
+query --@aspect_rules_ts//ts:skipLibCheck=always
+
 common --enable_bzlmod
