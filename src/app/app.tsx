@@ -1,4 +1,4 @@
-import Welcome from './welcome';
+import Welcome from '../welcome/welcome';
 
 function App() {
   return (

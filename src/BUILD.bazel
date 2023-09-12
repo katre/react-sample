@@ -4,29 +4,10 @@ load("@aspect_rules_swc//swc:defs.bzl", "swc")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("@bazel_skylib//lib:partial.bzl", "partial")
 
-ASSET_PATTERNS = [
-    "*.svg",
-    "*.css",
-]
-
-SRC_PATTERNS = [
-    "*.tsx",
-    "*.ts",
-]
-
 TRANSPILER = partial.make(
     swc,
     swcrc = "//:.swcrc",
 )
-
-# Filename conventions described at
-# https://create-react-app.dev/docs/running-tests#filename-conventions
-TEST_PATTERNS = [
-    "*.test.tsx",
-    "*.test.ts",
-    "*.spec.tsx",
-    "*.spec.ts",
-]
 
 ts_project(
     name = "index",
@@ -37,106 +18,16 @@ ts_project(
     tsconfig = "//:tsconfig",
     visibility = ["//visibility:public"],
     deps = [
-        ":app",
         "//:node_modules/react",
         "//:node_modules/react-dom",
+        "//src/app",
     ],
-)
-
-ts_project(
-    name = "app",
-    srcs = ["app.tsx"],
-    declaration = True,
-    resolve_json_module = True,
-    transpiler = TRANSPILER,
-    tsconfig = "//:tsconfig",
-    visibility = ["//visibility:public"],
-    deps = [
-        ":welcome",
-        "//:node_modules/react",
-        "//:node_modules/react-dom",
-    ],
-)
-
-ts_project(
-    name = "app_test_lib",
-    srcs = ["app.test.tsx"],
-    declaration = True,
-    resolve_json_module = True,
-    transpiler = TRANSPILER,
-    tsconfig = "//:tsconfig",
-    deps = [
-        ":app",
-        "//:node_modules/@testing-library/jest-dom",
-        "//:node_modules/@testing-library/react",
-        "//:node_modules/@types/jest",
-    ],
-)
-
-jest_test(
-    name = "app_test",
-    config = "//:jest_config",
-    data = [
-        ":app_test_lib",
-        "//:node_modules/jest-environment-jsdom",
-        "//:node_modules/jest-transform-stub",
-    ],
-    node_modules = "//:node_modules",
-)
-
-ts_project(
-    name = "welcome",
-    srcs = ["welcome.tsx"],
-    declaration = True,
-    resolve_json_module = True,
-    transpiler = TRANSPILER,
-    tsconfig = "//:tsconfig",
-    visibility = ["//visibility:public"],
-    deps = [
-        "//:node_modules/react",
-        "//:node_modules/react-dom",
-    ],
-)
-
-ts_project(
-    name = "welcome_test_lib",
-    srcs = ["welcome.test.tsx"],
-    declaration = True,
-    resolve_json_module = True,
-    transpiler = TRANSPILER,
-    tsconfig = "//:tsconfig",
-    deps = [
-        ":welcome",
-        "//:node_modules/@testing-library/jest-dom",
-        "//:node_modules/@testing-library/react",
-        "//:node_modules/@types/jest",
-    ],
-)
-
-jest_test(
-    name = "welcome_test",
-    config = "//:jest_config",
-    data = [
-        ":welcome_test_lib",
-        "//:node_modules/jest-environment-jsdom",
-        "//:node_modules/jest-transform-stub",
-    ],
-    node_modules = "//:node_modules",
 )
 
 js_library(
     name = "src",
-    srcs = glob(ASSET_PATTERNS),
     visibility = ["//visibility:public"],
     deps = [
         ":index",
-    ],
-)
-
-test_suite(
-    name = "all_tests",
-    tests = [
-        ":app_test",
-        ":welcome_test",
     ],
 )
