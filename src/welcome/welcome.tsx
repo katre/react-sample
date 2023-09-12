@@ -1,10 +1,11 @@
 type WelcomeProps = {
   name: string;
+  dataTestId: string;
 };
 
-const Welcome = ({ name }: WelcomeProps) => 
-  <div>
+const Welcome = ({ name, dataTestId }: WelcomeProps) => 
+  <p data-testid={dataTestId}>
     Welcome, {name}.
-  </div>
+  </p>
 
 export default Welcome;

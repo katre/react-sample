@@ -11,3 +11,8 @@ test('renders name', () => {
   expect(element).toBeInTheDocument();
 });
 
+test('sets testid', () => {
+  render(<Welcome dataTestId='test1' name='katre' />);
+  const element = screen.getByTestId('test1');
+  expect(element).toBeInTheDocument();
+});

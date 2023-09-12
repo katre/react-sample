@@ -1,4 +1,29 @@
+import { useState } from 'react';
 import Welcome from '../welcome/welcome';
+
+function WelcomeForm() {
+  const [name, setName] = useState('Guest');
+  return (
+    <>
+      <p>
+        <label>
+          Who are you?
+          <input
+            name="name_input"
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+        </label>
+      </p>
+
+      <Welcome
+        dataTestId='welcome'
+        name={name}
+      />
+    </>
+  );
+}
 
 function App() {
   return (
@@ -7,9 +32,9 @@ function App() {
         <p>
           Bazel/React/Typescript Sample App
         </p>
-
-        <Welcome name="Guest"/>
       </header>
+
+      <WelcomeForm />
     </div>
   );
 }
