@@ -29,11 +29,64 @@ TEST_PATTERNS = [
 ]
 
 ts_project(
-    name = "src_ts",
-    srcs = glob(
-        include = SRC_PATTERNS,
-        exclude = TEST_PATTERNS,
-    ),
+    name = "index",
+    srcs = ["index.tsx"],
+    declaration = True,
+    resolve_json_module = True,
+    transpiler = TRANSPILER,
+    tsconfig = "//:tsconfig",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":app",
+        "//:node_modules/react",
+        "//:node_modules/react-dom",
+    ],
+)
+
+ts_project(
+    name = "app",
+    srcs = ["app.tsx"],
+    declaration = True,
+    resolve_json_module = True,
+    transpiler = TRANSPILER,
+    tsconfig = "//:tsconfig",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":welcome",
+        "//:node_modules/react",
+        "//:node_modules/react-dom",
+    ],
+)
+
+ts_project(
+    name = "app_test_lib",
+    srcs = ["app.test.tsx"],
+    declaration = True,
+    resolve_json_module = True,
+    transpiler = TRANSPILER,
+    tsconfig = "//:tsconfig",
+    deps = [
+        ":app",
+        "//:node_modules/@testing-library/jest-dom",
+        "//:node_modules/@testing-library/react",
+        "//:node_modules/@types/jest",
+    ],
+)
+
+jest_test(
+    name = "app_test",
+    config = "//:jest_config",
+    data = [
+        ":app_test_lib",
+        "//:node_modules/jest-environment-jsdom",
+        "//:node_modules/jest-transform-stub",
+    ],
+    node_modules = "//:node_modules",
+)
+
+ts_project(
+    name = "welcome",
+    srcs = ["welcome.tsx"],
     declaration = True,
     resolve_json_module = True,
     transpiler = TRANSPILER,
@@ -45,24 +98,15 @@ ts_project(
     ],
 )
 
-js_library(
-    name = "src",
-    srcs = glob(ASSET_PATTERNS),
-    visibility = ["//visibility:public"],
-    deps = [
-        ":src_ts",
-    ],
-)
-
 ts_project(
-    name = "src_test_ts",
-    srcs = glob(TEST_PATTERNS),
+    name = "welcome_test_lib",
+    srcs = ["welcome.test.tsx"],
     declaration = True,
     resolve_json_module = True,
     transpiler = TRANSPILER,
     tsconfig = "//:tsconfig",
     deps = [
-        ":src_ts",
+        ":welcome",
         "//:node_modules/@testing-library/jest-dom",
         "//:node_modules/@testing-library/react",
         "//:node_modules/@types/jest",
@@ -70,13 +114,29 @@ ts_project(
 )
 
 jest_test(
-    name = "src_test",
+    name = "welcome_test",
     config = "//:jest_config",
     data = [
-        ":src",
-        ":src_test_ts",
+        ":welcome_test_lib",
         "//:node_modules/jest-environment-jsdom",
         "//:node_modules/jest-transform-stub",
     ],
     node_modules = "//:node_modules",
+)
+
+js_library(
+    name = "src",
+    srcs = glob(ASSET_PATTERNS),
+    visibility = ["//visibility:public"],
+    deps = [
+        ":index",
+    ],
+)
+
+test_suite(
+    name = "all_tests",
+    tests = [
+        ":app_test",
+        ":welcome_test",
+    ],
 )

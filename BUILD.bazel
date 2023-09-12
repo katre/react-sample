@@ -1,7 +1,10 @@
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
 load("@aspect_rules_webpack//webpack:defs.bzl", "webpack_bundle", "webpack_devserver")
-load("@npm//:tsconfig-to-swcconfig/package_json.bzl", tsconfig_to_swcconfig = "bin")
+load(
+    "@npm//:tsconfig-to-swcconfig/package_json.bzl",
+    tsconfig_to_swcconfig = "bin",
+)
 load("@npm//:defs.bzl", "npm_link_all_packages")
 
 npm_link_all_packages()
