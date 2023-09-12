@@ -1,22 +1,13 @@
-load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
+load("//src:ts_project.bzl", "ts_project")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
-load("@aspect_rules_swc//swc:defs.bzl", "swc")
-load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
-load("@bazel_skylib//lib:partial.bzl", "partial")
 
-TRANSPILER = partial.make(
-    swc,
-    swcrc = "//:.swcrc",
+package(
+    default_visibility = ["//visibility:private"],
 )
 
 ts_project(
     name = "index",
     srcs = ["index.tsx"],
-    declaration = True,
-    resolve_json_module = True,
-    transpiler = TRANSPILER,
-    tsconfig = "//:tsconfig",
-    visibility = ["//visibility:public"],
     deps = [
         "//:node_modules/react",
         "//:node_modules/react-dom",
