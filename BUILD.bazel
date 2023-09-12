@@ -34,7 +34,6 @@ js_library(
     visibility = ["//visibility:public"],
 )
 
-# Dev server for local testing.
 WEBPACK_DEPS = [
     "//:node_modules/@svgr/webpack",
     "//:node_modules/css-loader",
@@ -44,6 +43,7 @@ WEBPACK_DEPS = [
     "//:node_modules/style-loader",
 ]
 
+# Bundle for eventual serving.
 webpack_bundle(
     name = "bundle",
     srcs = [
@@ -56,6 +56,7 @@ webpack_bundle(
     deps = WEBPACK_DEPS,
 )
 
+# Dev server for local testing.
 webpack_devserver(
     name = "dev_server",
     data = [
